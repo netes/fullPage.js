@@ -3,7 +3,7 @@
 ![preview](https://raw.github.com/alvarotrigo/fullPage.js/master/examples/imgs/intro.png)
 ![compatibility](https://raw.github.com/alvarotrigo/fullPage.js/master/examples/imgs/compatible.gif)
 
-![fullPage.js version](http://img.shields.io/badge/fullPage.js-v2.7.9-brightgreen.svg)
+![fullPage.js version](http://img.shields.io/badge/fullPage.js-v2.8.1-brightgreen.svg)
 [![License](http://img.shields.io/badge/License-MIT-blue.svg)](http://opensource.org/licenses/MIT)
 7Kb gziped!
 
@@ -30,10 +30,11 @@ Would you like to have a website using fullpage.js functionality but you don't k
 - [Introduction](https://github.com/alvarotrigo/fullPage.js#introduction)
 - [Compatibility](https://github.com/alvarotrigo/fullPage.js#compatibility)
 - [Usage](https://github.com/alvarotrigo/fullPage.js#usage)
-  - [Creating links to sections or slides](https://github.com/alvarotrigo/fullPage.js/tree/dev#creating-links-to-sections-or-slides)
+  - [Creating links to sections or slides](https://github.com/alvarotrigo/fullPage.js#creating-links-to-sections-or-slides)
   - [Creating smaller sections](https://github.com/alvarotrigo/fullPage.js#creating-smaller-sections)
   - [State classes added by fullpage.js](https://github.com/alvarotrigo/fullPage.js#state-classes-added-by-fullpagejs)
   - [Lazy loading](https://github.com/alvarotrigo/fullPage.js#lazy-loading)
+  - [Autoplay embedded media](https://github.com/alvarotrigo/fullPage.js#auto-playpause-embedded-media)
 - [Options](https://github.com/alvarotrigo/fullPage.js#options)
 - [Methods](https://github.com/alvarotrigo/fullPage.js#methods)
 - [Callbacks](https://github.com/alvarotrigo/fullPage.js#callbacks)
@@ -55,7 +56,7 @@ fullPage.js is fully functional on all modern browsers, as well as some old ones
 It works with browsers with CSS3 support and with the ones which don't have it, making it ideal for old browsers compatibility.
 It also provides touch support for mobile phones, tablets and touch screen computers.
 
-[![Browserstack](http://wallpapers-for-ipad.com/fullpage/imgs3/logos/browserstack.png)](http://www.browserstack.com/)
+[![Browserstack](http://wallpapers-for-ipad.com/fullpage/imgs3/logos/browserstack2.png)](http://www.browserstack.com/)
 
 Special thanks to [Browserstack](http://www.browserstack.com/) for supporting fullpage.js.
 
@@ -90,7 +91,7 @@ npm install fullpage.js
 
 
 <!-- This following line is only necessary in the case of using the plugin option `scrollOverflow:true` -->
-<script type="text/javascript" src="vendors/jquery.slimscroll.min.js"></script>
+<script type="text/javascript" src="vendors/scrolloverflow.min.js"></script>
 
 <script type="text/javascript" src="jquery.fullPage.js"></script>
 ```
@@ -169,6 +170,7 @@ $(document).ready(function() {
 		continuousVertical: false,
 		normalScrollElements: '#element1, .element2',
 		scrollOverflow: false,
+		scrollOverflowOptions: null,
 		touchSensitivity: 15,
 		normalScrollElementTouchThreshold: 5,
 
@@ -180,7 +182,6 @@ $(document).ready(function() {
 		//Design
 		controlArrows: true,
 		verticalCentered: true,
-		resize : false,
 		sectionsColor : ['#ccc', '#fff'],
 		paddingTop: '3em',
 		paddingBottom: '10px',
@@ -271,13 +272,32 @@ To enable lazy loading all you need to do is change your `src` attribute to `dat
 </video>
  ```
 
+###Auto play/pause embedded media
+
+#### Play on section/slide load:
+Using the attribute `autoplay` for videos or audio, or the param `autoplay=1` for youtube iframes will result in the media element playing on page load. 
+In order to play it on section/slide load use instead the attribute `data-autoplay`. For example:
+
+```html
+<audio data-autoplay>
+	<source src="http://metakoncept.hr/horse.ogg" type="audio/ogg">
+</audio>
+```
+
+#### Pause on leave
+Embedded HTML5 `<video>` / `<audio>`  and Youtube iframes are automatically paused when you navigate away from a section or slide. This can be disabled by using the attribute `data-keepplaying`. For example: 
+```html
+<audio data-keepplaying>
+	<source src="http://metakoncept.hr/horse.ogg" type="audio/ogg">
+</audio>
+```
+
+
 ## Options
 
 - `controlArrows`: (default `true`) Determines whether to use control arrows for the slides to move right or left.
 
 - `verticalCentered`: (default `true`) Vertically centering of the content within sections. When set to `true`, your content will be wrapped by the plugin. Consider using delegation or load your other scripts in the `afterRender` callback.
-
-- `resize`: (default `false`) Whether you want to resize the text when the window is resized.
 
 - `scrollingSpeed`: (default `700`) Speed in milliseconds for the scrolling transitions.
 
@@ -370,13 +390,15 @@ $('#fullpage').fullpage({
 
 - `slidesNavPosition`: (default `bottom`) Defines the position for the landscape navigation bar for sliders. Admits `top` and `bottom` as values. You may want to modify the CSS styles to determine the distance from the top or bottom as well as any other style such as color.
 
-- `scrollOverflow`: (default `false`) defines whether or not to create a scroll for the section in case its content is bigger than the height of it. When set to `true`, your content will be wrapped by the plugin. Consider using delegation or load your other scripts in the `afterRender` callback.
-In case of setting it to `true`, it requires the vendor plugin [`jquery.slimscroll.min`](https://github.com/rochal/jQuery-slimScroll) and it should be loaded before the fullPage.js plugin. For example:
+- `scrollOverflow`: (default `false`) defines whether or not to create a scroll for the section/slide in case its content is bigger than the height of it. When set to `true`, your content will be wrapped by the plugin. Consider using delegation or load your other scripts in the `afterRender` callback.
+In case of setting it to `true`, it requires the vendor library [`scrolloverflow.min.js`](https://github.com/alvarotrigo/fullPage.js/vendors) and it should be loaded before the fullPage.js plugin. For example:
 
 ```html
-<script type="text/javascript" src="vendors/jquery.slimscroll.min.js"></script>
+<script type="text/javascript" src="vendors/scrolloverflow.min.js"></script>
 <script type="text/javascript" src="jquery.fullPage.js"></script>
 ```
+
+- `scrollOverflowOptions`: when using scrollOverflow:true fullpage.js will make use of a forked and modified version of [iScroll.js libary](https://github.com/cubiq/iscroll/). You can customize the scrolling behaviour by providing fullpage.js with the iScroll.js options you want to use. Check [its documentation](http://iscrolljs.com/) for more info.
 
 - `sectionSelector`: (default `.section`) Defines the jQuery selector used for the plugin sections. It might need to be changed sometimes to avoid problem with other plugins using the same selectors as fullpage.js..
 
@@ -731,6 +753,7 @@ Want to build fullpage.js distribution files? Please see [Build Tasks](https://g
 - [fullPage.js jsDelivr CDN](http://www.jsdelivr.com/#!jquery.fullpage)
 - [fullPage.js plugin for October CMS](http://octobercms.com/plugin/freestream-parallax)
 - [fullPage.js wordpress plugin](https://wordpress.org/plugins/wp-fullpage/)
+- [fullPage.js Angular2 directive](https://github.com/meiblorn/ng2-fullpage)
 - [fullPage.js angular directive](https://github.com/hellsan631/angular-fullpage.js)
 - [Angular fullPage.js - Adaptation for Angular.js v1.x](https://github.com/mmautomatizacion/angular-fullpage.js)
 - [Integrating fullPage.js with Wordpress (Tutorial)](http://premium.wpmudev.org/blog/build-apple-inspired-full-page-scrolling-pages-for-your-wordpress-site/)
